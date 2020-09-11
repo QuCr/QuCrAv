@@ -9,47 +9,74 @@ using System.Xml;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace HttpClientStatus {
 	class Program {
 		static ScrapingBrowser _browser = new ScrapingBrowser();
-		static string url = @"https://www.google.com/maps/dir/Vismarkt+20,+2800+Mechelen/Kiliaanstraat+2,+2570+Duffel/";
+		static Dictionary<string, JToken> cache = new Dictionary<string, JToken>();
+
+		static string cachePath = "../../../cache.json";
+		static bool cacheUsed = false;
+		static bool cacheRewrite = false;
+
+		static Program() {
+			if (File.Exists(cachePath)) {
+				Console.WriteLine("Cache is read");
+				cache = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(File.ReadAllText(cachePath));
+			}
+		}
 
 		static void Main(string[] args) {
-
-			//var a = getJTokenfromURL("https://maps.googleapis.com/maps/api/directions/json", "?origin=Vismarkt%2020,%202800%20Mechelen&destination=Kiliaanstraat%202,%202570%20Duffel&key=AIzaSyA62NKcfzfhHJakBTUscjrWsN_OCmtMzWs")
-				;
-			//Console.ReadKey();
-
-			//return;
-
-			//Opdracht 1
-			foreach (Bar bar in Bar.bars) {
-				//bar.getLongitudeLatide(false);
-				JToken token = getJTokenfromURL(
-					"https://maps.googleapis.com/maps/api/geocode/json" +
-					"?address=Vismarkt%2020,%202800%20Mechelen" +
-					"&key=AIzaSyA62NKcfzfhHJakBTUscjrWsN_OCmtMzWs"
-				);
+			opdracht1();
 
 
+			if (cacheUsed) Console.WriteLine("Cache is used");
+			if (cacheRewrite) {
+				Console.WriteLine("Cache is rewritten");
+				File.WriteAllText(cachePath, JsonConvert.SerializeObject(cache, Newtonsoft.Json.Formatting.Indented));
 			}
 
 			//Opdracht 2
-			foreach (Bar bar in Bar.bars) {
-				Console.Write(bar.address + '\n');
-			}
+			opdracht2();
 
 			Console.ReadKey();
 		}
 
-		static JToken getJTokenfromURL(string uri) {
-			HttpClient httpClient = new HttpClient { BaseAddress = new Uri(uri) };
-			string json = httpClient.GetStringAsync("").Result;
-			
-			//De 
-			JObject Jobject = JObject.Parse("{data: " + json + "}");
-			return Jobject["data"];
+		private static void opdracht1(bool execute = true, bool print = false) {
+			if (execute) {
+				if (print) Console.WriteLine("{0,-50}{1,-15}{2,-15}", "address", "latitude", "longitude");
+				foreach (Point bar in Point.bars) {
+					bar.generateLatitudeLngitde();
+					if (print) Console.WriteLine("{0,-50}{1,-15}{2,-15}", bar.address, bar.latitude, bar.longitude);
+				}
+			}
 		}
+
+		private static void opdracht2(bool execute = true, bool print = false) {
+			if (execute) {
+				//https://maps.googleapis.com/maps/api/directions/json?origin=51.0267325,4.47645&destination=51.0958877,4.5059106&key=AIzaSyA62NKcfzfhHJakBTUscjrWsN_OCmtMzWs
+			}
+		}
+
+		public static JToken getJTokenfromURL(string uri) {
+			if (cache.ContainsKey(uri)) {
+				cacheUsed = true;
+				return cache[uri];
+			} else {
+				HttpClient httpClient = new HttpClient { BaseAddress = new Uri(uri) };
+				string json = httpClient.GetStringAsync("").Result;
+
+				//Issue #1: 
+				JObject Jobject = JObject.Parse("{data: " + json + "}");
+
+				cacheRewrite = true;
+				cache.Add(uri, Jobject["data"]);
+
+
+				return Jobject["data"];
+			}
+		} 
 	}
 }
