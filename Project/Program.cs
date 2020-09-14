@@ -1,4 +1,14 @@
-﻿namespace QuCrAv {
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using Newtonsoft.Json;
+using System.Net.Http;
+
+namespace QuCrAv {
 	class Program {
 		/// <summary> Used for storing literally cost-expensive HTTP requests  </summary>
 		static Dictionary<string, JToken> cache = new Dictionary<string, JToken>();
@@ -16,11 +26,11 @@
 				cache = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(File.ReadAllText(cachePath));
 			}
 		}
-
-		static void Main(string[] args) {
-
-			////
-			////
+		[STAThread]
+		static void Main() {
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new Form1());
 
 			opdracht1(true, false);
 			opdracht2(true, true);
@@ -32,18 +42,17 @@
 				File.WriteAllText(cachePath, JsonConvert.SerializeObject(cache, Newtonsoft.Json.Formatting.Indented));
 			}
 			#endregion
-			
+
 			Console.ReadKey();
 		}
-
 		private static void opdracht1(bool execute = true, bool print = false) {
 			if (execute) {
 				if (print) Console.WriteLine("[");
 				foreach (Point bar in Point.points) {
 					bar.getLatLong();
-					if (print) Console.WriteLine("[{1,-15},{2,-15},{3,0}],", 
-						bar.address, 
-						(bar.latitude - 51).ToString().Replace(',','.'), 
+					if (print) Console.WriteLine("[{1,-15},{2,-15},{3,0}],",
+						bar.address,
+						(bar.latitude - 51).ToString().Replace(',', '.'),
 						(bar.longitude - 4).ToString().Replace(',', '.'),
 						bar.id);
 				}
