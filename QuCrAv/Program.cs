@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.IO;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace QuCrAv {
 	class Program {
@@ -26,7 +25,10 @@ namespace QuCrAv {
 		}
 
 		static void Main(string[] args) { 
-			opdracht1(true, true);
+
+			
+
+			opdracht1(true, false);
 			opdracht2(true, true);
 
 			#region logs
@@ -57,7 +59,7 @@ namespace QuCrAv {
 
 		private static void opdracht2(bool execute = true, bool print = false) {
 			if (execute) {
-
+				new TSP().start();
 			}
 		}
 
