@@ -5,40 +5,47 @@ using Newtonsoft.Json.Linq;
 
 namespace QuCrAv {
 	public class Route {
+		public static double[][] distanceMatrix;
 		public static List<Route> routes = new List<Route>();
-		public List<Point> points = new List<Point>(Point.points.Count * Point.points.Count - Point.points.Count);
-		string url => $"https://maps.googleapis.com/maps/api/directions/json?origin={origin.address}&destination={destination.address}&key={Program.APIKEY}";
+		public static int N = Point.points.Count;
 
-
-		public string distanceText;
-		public int distance;
-		public string durationText;
-		public int duration;
-
+		public List<Point> points = new List<Point>(N*N*N);
+		public double distance;
 		public Point origin => points[0];
-		public Point destination => points[points.Count-1];
-		public int count => points.Count;
+		public Point destination => points[points.Count - 1];
+
+		static Route() {
+			N = Point.points.Count;
+			distanceMatrix = new double[N][];
+			for (int routeID = 0;routeID < N; routeID++) {
+				distanceMatrix[routeID] = new double[N];
+			}
+		}
 
 		public Route(params Point[] points) {
 			this.points.AddRange(points);
 			routes.Add(this);
 
-			/*JToken token = Program.getJSONfromURL(url);
-
-			JToken leg = token["routes"][0]["legs"][0];
-			distanceText = leg["distance"]["text"].ToString();
-			distance = int.Parse(leg["distance"]["value"].ToString());
-			durationText = leg["duration"]["text"].ToString();
-			duration = int.Parse(leg["duration"]["value"].ToString());*/
-
 			distance = calculateDistance();
-
-
-			//Console.WriteLine($"Route #{routes.Count} " + $"({origin.id} -> {destination.id}) [{distance}] [{duration}] [{distance / duration * 3.6} km/u]");
+			
+			Console.WriteLine($"Route #{routes.Count} " + $"({origin.latitude},{origin.longitude} -> {destination.latitude},{destination.longitude}) [{distance}m]");
 		}
 
-		private int getDistance() {
-			throw new NotImplementedException();
+		/// <summary> gebruikt Haversine's formule </summary>
+		/// <see cref="https://en.wikipedia.org/wiki/Haversine_formula"/>
+		/// <returns> afstand tussen twee punten op een bol (Aarde) </returns>
+		public double calculateDistance() {
+			double lat1 = origin.latitude.Value * Math.PI / 180; 
+			double lon1 = destination.latitude.Value * Math.PI / 180;
+			double lat2 = (destination.latitude.Value - origin.latitude.Value) * Math.PI / 180;
+			double lon2 = (destination.longitude.Value - origin.longitude.Value) * Math.PI / 180;
+
+			double a = Math.Sin(lat2 / 2) * Math.Sin(lat2 / 2) +
+					   Math.Cos(lat1) * Math.Cos(lon1) *
+					   Math.Sin(lon2 / 2) * Math.Sin(lon2 / 2);
+			double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+			return 6371000 * c;
 		}
 	}
 }

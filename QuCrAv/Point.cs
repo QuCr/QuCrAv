@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace QuCrAv {
@@ -39,15 +37,18 @@ namespace QuCrAv {
 			new Point("Klinkaert", 9, "Industriezone Z1B 70", 2850, "Boom", "Antwerpen", "Belgium");
 			new Point("Den Blauwe Neus", 15, "Hollebeekstraat 56", 2840, "Rumst", "Antwerpen", "Belgium");
 			new Point("De Vijfhoek", 8, "Mechelsesteenweg 248", 2860, "Sint-Katelijne-Waver", "Antwerpen", "Belgium");
-		
-	}
 
-		internal void generateLatitudeLngitde() {
+		}
+
+		public void getLatLong() {
 			JToken token = Program.getJSONfromURL(
 				"https://maps.googleapis.com/maps/api/geocode/json" +
 				"?address=" + address +
-				"&key=AIzaSyA62NKcfzfhHJakBTUscjrWsN_OCmtMzWs"
+				"&key=" + Program.APIKEY
 			);
+
+			if (token["error_message"] != null)
+				throw new ArgumentException("API sleutel is geen geldige sleutel.");
 
 			JToken location = token["results"][0]["geometry"]["location"];
 			latitude = location["lat"].ToObject<double?>();
@@ -66,33 +67,5 @@ namespace QuCrAv {
 
 			points.Add(this);
 		}
-
-		/// <summary> Old method, before using Google API </summary>
-		/*public bool getLongitudeLatide(bool output) {
-			HttpClient httpClient = new HttpClient {
-				BaseAddress = new Uri("http://nominatim.openstreetmap.org/")
-			};
-			
-			//Needs an user agent for getting an usefull response
-			httpClient.DefaultRequestHeaders.Add("User-Agent", "QuCrAvento");
-
-			string json = httpClient.GetStringAsync("").Result;
-
-			//Issue 1
-			JObject Jobject = JObject.Parse("{data: " + json + "}");
-
-			foreach (JToken location in Jobject["data"]) {
-				if (location["lat"] != null)
-					latitude = location["lat"].Value<double>();
-				if (location["lat"] != null)
-					longitude = location["lon"].Value<double>();
-				if (output) Console.WriteLine("{0,20},{1};", location["lat"], location["lon"]);
-				return true;
-			}
-
-			if (output) Console.WriteLine();
-
-			return false;
-		}*/
 	}
 }
