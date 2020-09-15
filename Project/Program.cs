@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Drawing;
 
 namespace QuCrAv {
 	class Program {
@@ -18,7 +19,9 @@ namespace QuCrAv {
 		static string cachePath = "../../../cache.json";
 		static bool cacheUsed = false;
 		static bool cacheRewrite = false;
-		public static string APIKEY => File.ReadAllText("../../../key.txt");
+		public static string APIKEY => File.ReadAllText("../../key.txt");
+
+		public static Form form;
 
 		static Program() {
 			if (File.Exists(cachePath)) {
@@ -30,10 +33,11 @@ namespace QuCrAv {
 		static void Main() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Form1());
 
 			opdracht1(true, false);
-			opdracht2(true, true);
+			opdracht2(true, false);
+
+			Application.Run(form = new Form1());
 
 			#region logs
 			if (cacheUsed) Console.WriteLine("USED CACHE");

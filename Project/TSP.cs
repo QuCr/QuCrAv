@@ -14,7 +14,7 @@ namespace QuCrAv {
 
 		List<Path> paths = new List<Path>();
 		
-		Path topPath = new Path();
+		public static Path topPath = new Path();
 		Path bestPopulationPath;
 		static Random random = new Random();
 		private double mutationRate = 0.01;
@@ -27,18 +27,18 @@ namespace QuCrAv {
 				paths.Add(path);
 			}
 
-			for (;iterationId < 10000000;iterationId++) {
+			for (;iterationId < 25;iterationId++) {
 
 				calculateFitness();
 				normalizeFitness();
 				nextGeneration();
 				solveIntersections();
 
-				if (iterationId % 10000 == 00)
-					Console.WriteLine(iterationId + " =====================================================================");
+				if (iterationId % 10000 == 00) ;
+					//Console.WriteLine(iterationId + " =====================================================================");
 			}
 
-			Console.Read();
+			//Console.Read();
 		}
 
 		private void solveIntersections() {
@@ -55,13 +55,13 @@ namespace QuCrAv {
 
 						
 						if (list.Distinct().Count() == list.Count() && Intersector.isIntersecting(a, b, c, d)) {
-							Console.Write("[{0},{1},{2},{3}]", a.id, b.id, c.id, d.id);
+							//Console.Write("[{0},{1},{2},{3}]", a.id, b.id, c.id, d.id);
 							inter++;
 						}
 					}
 				}
 			}
-			Console.WriteLine(inter + " / " + iterationId);
+			//Console.WriteLine(inter + " / " + iterationId);
 		}
 
 		public void calculateFitness() {
@@ -99,7 +99,7 @@ namespace QuCrAv {
 				Console.Write("{0,3}", item.id);
 			}
 			Console.WriteLine("\t{0}m", topPath.distance);
-			Console.ReadKey();
+			//Console.ReadKey();
 		}
 
 		public void nextGeneration() {

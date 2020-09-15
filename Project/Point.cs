@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using Newtonsoft.Json.Linq;
 
 namespace QuCrAv {
@@ -58,6 +59,10 @@ namespace QuCrAv {
 			this.longitude = longitude;
 			this.latitude = latitude;
 		}
+
+		public PointF toPointF() {
+			return new PointF((float)latitude, (float)longitude);
+		} 
 
 		public void getLatLong() {
 			JToken token = Program.getJSONfromURL(
