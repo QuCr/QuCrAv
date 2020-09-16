@@ -83,7 +83,7 @@ namespace QuCrAv {
 		}
 
 		public override string ToString() {
-			return "["+id+"]";
+			return $"{id};{cost}";
 		}
 	}
 }

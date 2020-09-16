@@ -35,7 +35,12 @@ namespace QuCrAv {
 				new SolidBrush(PathFinder.shortestPath.distance < PathFinder.goalDistance ? Color.Green : Color.Red),
 				new PointF(20, 20)
 			);
-
+			g.DrawString(
+				string.Join(", ", PathFinder.shortestPath.order),
+				new Font("Consolas", 10),
+				new SolidBrush(Color.Black), 
+				new PointF(20, 60)
+			);
 			Pen redPen = new Pen(Color.Red);
 			Pen bluePen = new Pen(Color.Blue);
 			Pen greenPen = new Pen(Color.Green);

@@ -20,9 +20,6 @@ namespace QuCrAv {
 			pathID = pathCount++;
 			order.AddRange(Point.points);
 			shuffle(order);
-
-			//mainPointIndices.Add(0);
-			//mainPointIndices.Add(order.Count);
 		}
 
 		public Path(params Point[] points) {
@@ -72,12 +69,16 @@ namespace QuCrAv {
 		public void prepareCalculationDistance() {
 			if (PathFinder.capacity == int.MaxValue)
 				return;
+			
 
 			for (int i = 0;i < mainPointIndices.Count;i++) {
-				order.Insert(mainPointIndices[i] + i, Point.mainPoint);
+				//order.Insert(mainPointIndices[i] + i, Point.mainPoint);
 			}
-			
-			
+
+			order.Insert(0, Point.mainPoint);
+			order.Insert(order.Count, Point.mainPoint);
+
+
 			float capacity = PathFinder.capacity;
 			float cost = 0;
 

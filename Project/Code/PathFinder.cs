@@ -16,8 +16,8 @@ namespace QuCrAv {
 
 		const int exponentialDeadRange = 15;
 		const int pathCount = 1000;
-		const int maxGeneration = 1000;
-		public const int goalDistance = 81178;
+		const int maxGeneration = 100;
+		public const int goalDistance = 95872;
 
 		static public void start(bool print, float capacity = int.MaxValue) {
 			PathFinder.capacity = capacity;
@@ -39,12 +39,17 @@ namespace QuCrAv {
 
 			if (print) {
 				shortestPath.prepareCalculationDistance(); 
-				Console.WriteLine("Indices: " + String.Join(",", shortestPath.order));
-				Console.Write("Addresses:\nhttps://www.google.be/maps/dir/Avento/");
+				Console.WriteLine("Indices: " + string.Join(", ", shortestPath.order));
+				Console.Write("Addresses:\nhttps://www.google.be/maps/dir/");
 				foreach (var item in shortestPath.order) {
-					Console.Write(item + "/");
+					Console.Write(item.address + "/");
 				}
-				Console.Write("Avento/\n");
+				Console.WriteLine("I9IUHYGHUYU: " + shortestPath.distance);
+				shortestPath.order.Reverse();
+				Console.WriteLine("I9IUHYGHUYU: " + shortestPath.distance);
+				foreach (var item in shortestPath.order) {
+					Console.Write(item.address + "/");
+				}
 			}
 		}
 
