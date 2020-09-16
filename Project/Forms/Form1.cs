@@ -52,21 +52,21 @@ namespace QuCrAv {
 			g.DrawLine(bluePen,
 					((float)showingPoints[0].longitude + transX1) * scaleX + transX2,
 					((float)showingPoints[0].latitude + transY1) * scaleY + transY2,
-					((float)Point.avento.longitude + transX1) * scaleX + transX2,
-					((float)Point.avento.latitude + transY1) * scaleY + transY2
+					((float)Point.mainPoint.longitude + transX1) * scaleX + transX2,
+					((float)Point.mainPoint.latitude + transY1) * scaleY + transY2
 			);
 			g.DrawLine(bluePen,
 					((float)showingPoints.Last().longitude + transX1) * scaleX + transX2,
 					((float)showingPoints.Last().latitude + transY1) * scaleY + transY2,
-					((float)Point.avento.longitude + transX1) * scaleX + transX2,
-					((float)Point.avento.latitude + transY1) * scaleY + transY2
+					((float)Point.mainPoint.longitude + transX1) * scaleX + transX2,
+					((float)Point.mainPoint.latitude + transY1) * scaleY + transY2
 			);
 
 
 
-			var centerX = ((float)Point.avento.longitude + transX1) * scaleX + transX2;
-			var centerY = ((float)Point.avento.latitude + transY1) * scaleY + transY2;
-			var radius = 2f;
+			var centerX = ((float)Point.mainPoint.longitude + transX1) * scaleX + transX2;
+			var centerY = ((float)Point.mainPoint.latitude + transY1) * scaleY + transY2;
+			var radius = 3f;
 			g.DrawEllipse(bluePen,
 					centerX - radius,
 					centerY - radius,
@@ -76,18 +76,25 @@ namespace QuCrAv {
 			for (int i = 0;i < showingPoints.Count;i++) {
 				centerX = ((float)showingPoints[i].longitude + transX1) * scaleX + transX2;
 				centerY = ((float)showingPoints[i].latitude + transY1) * scaleY + transY2;
-				radius = 2f;
+				radius = 4f;
 				g.DrawEllipse(redPen, 
 					centerX - radius, 
 					centerY - radius, 
 					radius + radius, 
 					radius + radius);
-				if (showingPoints[i].id == 4) centerX += 20;
+				if (showingPoints[i].id == 4) centerX += 30;
+				if (showingPoints[i].id == 2) centerX -= 10;
 				g.DrawString(
 					showingPoints[i].id.ToString(),
 					new Font("Arial", 20),
-					new SolidBrush(Color.Black),
+					new SolidBrush(Color.Red),
 					new PointF(centerX - 20, centerY - 20)
+				);
+				g.DrawString(
+					showingPoints[i].cost.ToString(),
+					new Font("Arial", 20),
+					new SolidBrush(Color.Blue),
+					new PointF(centerX - 20, centerY - 50)
 				);
 			}
 		}

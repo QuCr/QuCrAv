@@ -35,11 +35,11 @@ namespace QuCrAv {
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			opdracht1(true, false);
-			opdracht2(true, true);
+			opdracht2(false, true);
+			opdracht3(true, true);
 
 			Application.Run(form = new Form1());
 			
-
 			#region logs
 			if (cacheUsed) Console.WriteLine("USED CACHE");
 			if (cacheRewrite) {
@@ -53,12 +53,12 @@ namespace QuCrAv {
 		static void opdracht1(bool execute = true, bool print = false) {
 			if (execute) {
 				if (print) Console.WriteLine("[");
-				Point.avento.getLatLong();
+				Point.mainPoint.getLatLong();
 				if (print) Console.WriteLine("[{1,-15},{2,-15},{3,0}],",
-					Point.avento.address,
-					(Point.avento.latitude - 51).ToString().Replace(',', '.'),
-					(Point.avento.longitude - 4).ToString().Replace(',', '.'),
-					Point.avento.id);
+					Point.mainPoint.address,
+					(Point.mainPoint.latitude - 51).ToString().Replace(',', '.'),
+					(Point.mainPoint.longitude - 4).ToString().Replace(',', '.'),
+					Point.mainPoint.id);
 				foreach (Point point in Point.points) {
 					point.getLatLong();
 					if (print) Console.WriteLine("[{1,-15},{2,-15},{3,0}],",
@@ -73,7 +73,13 @@ namespace QuCrAv {
 
 		static void opdracht2(bool execute = true, bool print = false) {
 			if (execute) {
-				new PathFinder().start();
+				new PathFinder().start(print);
+			}
+		}
+
+		static void opdracht3(bool execute = true, bool print = false) {
+			if (execute) {
+				new PathFinder().start(print, 90);
 			}
 		}
 

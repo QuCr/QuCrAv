@@ -14,14 +14,14 @@ namespace QuCrAv {
 		const int exponentialDeadRange = 15;
 		const int pathCount = 1000;
 		const int maxGeneration = 100;
-		const int goalDistance = 79865;
+		const int goalDistance = 95872;
 
 		List<Path> paths = new List<Path>();
 		
 		Path populationPath;
-		double mutationRate = 0.01;
-		
-		public void start() {
+		public const double mutationRate = 0.001;
+
+		public void start(bool print, int capacity = int.MaxValue) {
 			for (int i = 0;i < pathCount;i++) {
 				paths.Add(new Path());
 			}
@@ -29,39 +29,46 @@ namespace QuCrAv {
 			while (shortestPath.distance > goalDistance && generationID < maxGeneration) {
 				generationID++;
 
-				calculateFitness();
+				calculateFitness(capacity);
 				normalizeFitness();
 				nextGeneration();
 
-				if (generationID % 10 == 0)
+				if (print && generationID % 10 == 0)
 					Console.WriteLine($"Generation {generationID} of {maxGeneration}:\tDistance: {shortestPath.distance}m");
 			}
 
-			Console.Write("Addresses:\nhttps://www.google.be/maps/dir/Avento/");
-			foreach (var item in shortestPath.order) {
-				Console.Write(item.address + "/");
+			if (print) {
+			 Console.Write("Addresses:\nhttps://www.google.be/maps/dir/Avento/");
+				foreach (var item in shortestPath.order) {
+					Console.Write(item.address + "/");
+				}
+				Console.Write("Avento/\n");
 			}
-			Console.Write("Avento/");
 		}
 
-		void calculateFitness() {
+		void calculateFitness(int capacity) {
 			int bestPopulationPathDistance = int.MaxValue;
 			var a = Point.points;
 			foreach (Path path in paths) {
-				path.order.Insert(0,				Point.avento);
-				path.order.Insert(path.order.Count, Point.avento);
-				double d = path.calculateDistance();
-				path.order.Remove(Point.avento);
-				path.order.Remove(Point.avento);
 
-				if (d < shortestPath.distance) {
+
+				path.addMainPoints(capacity);
+
+				double distance = path.calculateDistance();
+
+				path.order.RemoveAll((p) => p == Point.mainPoint);
+
+
+
+
+				if (distance < shortestPath.distance) {
 					shortestPath = path;
 				}
-				if (d < bestPopulationPathDistance) {
+				if (distance < bestPopulationPathDistance) {
 					populationPath = path;
 				}
 
-				path.fitness = 1 / (Math.Pow(d, exponentialDeadRange) + 1);
+				path.fitness = 1 / (Math.Pow(distance, exponentialDeadRange) + 1);
 			}
 		}
 
@@ -84,29 +91,21 @@ namespace QuCrAv {
 				Path listA = pickOne(paths);
 				Path listB = pickOne(paths);
 				Path order = crossOver(listA, listB);
-				newPaths.Add(mutate(order));
+				newPaths.Add(order);
 			}
 			paths = newPaths;
 		}
 
-		Path mutate(Path path) {
-			foreach (Point point in Point.points) {
+		/*Path mutate(Path path) {
+			for (int i = 1;i < path.order.Count - 1;i++) {
 				if (random.NextDouble() < mutationRate) {
-					int indexA = random.Next(Point.points.Count);
-					int indexB = (indexA + 1) % Point.points.Count;
-					swap(path.order, indexA, indexB);
+					path.order.Insert(i, Point.mainPoint);
 				}
 			}
 
 			var newPath = path;
 			return newPath;
-		}
-
-		void swap(List<Point> order, int indexA, int indexB) {
-			var temp = order[indexA];
-			order[indexA] = order[indexB];
-			order[indexB] = temp;
-		}
+		}*/
 
 		Path crossOver(Path path, Path listB) {
 			int start = random.Next(Point.points.Count);

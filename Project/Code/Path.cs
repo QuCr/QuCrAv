@@ -7,6 +7,7 @@ namespace QuCrAv {
 		int pathCount = 0;
 
 		public List<Point> order = new List<Point>();
+		public List<int> mainPointIndexes = new List<int>() { 0,1};
 		public double distance = double.PositiveInfinity;
 		public double fitness;
 
@@ -50,6 +51,32 @@ namespace QuCrAv {
 			}
 
 			return distance = pathDistance;
+		}
+
+		public void addMainPoints(int capacity) {
+			order.Insert(0, Point.mainPoint);
+			order.Insert(order.Count, Point.mainPoint);
+
+			if (capacity == int.MaxValue)
+				return;
+
+			int cost = 0;
+			for (int i = 0;i < order.Count;i++) {
+				Point point = order[i];
+
+				if (point.cost > capacity)
+					throw new ArgumentOutOfRangeException("The cost of a point is more than the capacity");
+
+				cost += point.cost;
+
+				if (cost > capacity) {
+					order.Insert(i, Point.mainPoint);
+					cost -= capacity;
+					mainPointIndexes.Add(i);
+				}
+
+			}
+
 		}
 
 		void shuffle<T>(List<T> array) {

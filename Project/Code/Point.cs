@@ -8,11 +8,11 @@ namespace QuCrAv {
 	/// <summary> Represents a cafe </summary>
 	public class Point {
 		public static List<Point> points = new List<Point>();
-		public static Point avento;
+		public static Point mainPoint;
 
 		public int id;
 		public string name;
-		public int ordered;
+		public int cost;
 		public string street;
 		public int postalCode;
 		public string city;
@@ -25,7 +25,7 @@ namespace QuCrAv {
 		public string address => $"{street}, {postalCode} {city}";
 
 		static Point() {
-			avento = new Point(0, true, "Avento", -90, "Building T, Schaliënhoevedreef 20", 2800, "Mechelen", "Antwerpen", "Belgium");
+			mainPoint = new Point(0, true, "Avento", 0, "Building T, Schaliënhoevedreef 20", 2800, "Mechelen", "Antwerpen", "Belgium");
 			Point B = new Point(1, false, "Buffalo Cafe", 20, "Kioskplaats 111", 2660, "Antwerpen", "Antwerpen", "Belgium");
 			Point C = new Point(2, false, "Café Den Baron", 16, "Strijdersstraat 57", 2650, "Edegem", "Antwerpen", "Belgium");
 			Point D = new Point(3, false, "Boerke Naas vzw", 6, "Zwanenstraat 70", 2560, "Nijlen", "Antwerpen", "Belgium");
@@ -47,7 +47,7 @@ namespace QuCrAv {
 		public Point(int id, bool mainPoint, string name, int ordered, string street, int postalCode, string city, string province, string country) {
 			this.id = id;
 			this.name = name;
-			this.ordered = ordered;
+			this.cost = ordered;
 			this.street = street;
 			this.postalCode = postalCode;
 			this.city = city;
