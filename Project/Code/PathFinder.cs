@@ -1,80 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace QuCrAv {
 	/// <summary>
 	/// Traveling Sales Person
 	/// </summary>
+	public class PathFinder {
+		public static Path shortestPath = new Path();
+		static Random random = new Random();
 
-	public class TSP {
-		int exponentialDeadRange = 15;
-		int pathCount = 1000;
+		static int generationID = 0;
+
+		const int exponentialDeadRange = 15;
+		const int pathCount = 1000;
+		const int maxGeneration = 100;
+		const int goalDistance = 79865;
 
 		List<Path> paths = new List<Path>();
 		
-		Path topPath = new Path();
-		Path bestPopulationPath;
-		static Random random = new Random();
-		private double mutationRate = 0.01;
-
-		static int iterationId = 0;
-
+		Path populationPath;
+		double mutationRate = 0.01;
+		
 		public void start() {
 			for (int i = 0;i < pathCount;i++) {
-				Path path = new Path();
-				paths.Add(path);
+				paths.Add(new Path());
 			}
 
-			for (;iterationId < 10000000;iterationId++) {
+			while (shortestPath.distance > goalDistance && generationID < maxGeneration) {
+				generationID++;
 
 				calculateFitness();
 				normalizeFitness();
 				nextGeneration();
-				solveIntersections();
 
-				if (iterationId % 10000 == 00)
-					Console.WriteLine(iterationId + " =====================================================================");
+				if (generationID % 10 == 0)
+					Console.WriteLine($"Generation {generationID} of {maxGeneration}:\tDistance: {shortestPath.distance}m");
 			}
 
-			Console.Read();
-		}
-
-		private void solveIntersections() {
-			int inter = 0;
-			for (int i = 0;i < topPath.order.Count - 1;i++) {
-				for (int j = 0;j < topPath.order.Count - 1;j++) {
-					if (topPath.order[i] != topPath.order[j] && i < j) {
-						var a = topPath.order[i];
-						var b = topPath.order[i + 1];
-						var c = topPath.order[j];
-						var d = topPath.order[j + 1];
-
-						List<Point> list = new List<Point>() { a, b, c, d };
-
-						
-						if (list.Distinct().Count() == list.Count() && Intersector.isIntersecting(a, b, c, d)) {
-							Console.Write("[{0},{1},{2},{3}]", a.id, b.id, c.id, d.id);
-							inter++;
-						}
-					}
-				}
+			Console.Write("Addresses:\nhttps://www.google.be/maps/dir/Avento/");
+			foreach (var item in shortestPath.order) {
+				Console.Write(item.address + "/");
 			}
-			Console.WriteLine(inter + " / " + iterationId);
+			Console.Write("Avento/");
 		}
 
-		public void calculateFitness() {
+		void calculateFitness() {
 			int bestPopulationPathDistance = int.MaxValue;
-
+			var a = Point.points;
 			foreach (Path path in paths) {
+				path.order.Insert(0,				Point.avento);
+				path.order.Insert(path.order.Count, Point.avento);
 				double d = path.calculateDistance();
+				path.order.Remove(Point.avento);
+				path.order.Remove(Point.avento);
 
-				if (d < topPath.distance) {
-					topPath = path;
+				if (d < shortestPath.distance) {
+					shortestPath = path;
 				}
 				if (d < bestPopulationPathDistance) {
-					bestPopulationPath = path;
+					populationPath = path;
 				}
 
 				path.fitness = 1 / (Math.Pow(d, exponentialDeadRange) + 1);
@@ -82,7 +66,7 @@ namespace QuCrAv {
 		}
 
 
-		public void normalizeFitness() {
+		void normalizeFitness() {
 			double sumFitness = 0;
 			
 
@@ -91,18 +75,10 @@ namespace QuCrAv {
 			}
 			foreach (Path path in paths) {
 				path.fitness = path.fitness / sumFitness;
-
-
 			}
-			
-			foreach (var item in topPath.order) {
-				Console.Write("{0,3}", item.id);
-			}
-			Console.WriteLine("\t{0}m", topPath.distance);
-			Console.ReadKey();
 		}
 
-		public void nextGeneration() {
+		void nextGeneration() {
 			List<Path> newPaths = new List<Path>();
 			foreach (Path path in paths) {
 				Path listA = pickOne(paths);
@@ -113,7 +89,7 @@ namespace QuCrAv {
 			paths = newPaths;
 		}
 
-		private Path mutate(Path path) {
+		Path mutate(Path path) {
 			foreach (Point point in Point.points) {
 				if (random.NextDouble() < mutationRate) {
 					int indexA = random.Next(Point.points.Count);
@@ -126,13 +102,13 @@ namespace QuCrAv {
 			return newPath;
 		}
 
-		private void swap(List<Point> order, int indexA, int indexB) {
+		void swap(List<Point> order, int indexA, int indexB) {
 			var temp = order[indexA];
 			order[indexA] = order[indexB];
 			order[indexB] = temp;
 		}
 
-		private Path crossOver(Path path, Path listB) {
+		Path crossOver(Path path, Path listB) {
 			int start = random.Next(Point.points.Count);
 			int end = random.Next(start+1,Point.points.Count);
 			Path newPath = new Path(path.order.GetRange(start, end - start).ToArray());
@@ -143,11 +119,10 @@ namespace QuCrAv {
 					newPath.order.Add(point);
 			}
 
-			newPath.calculateDistance();
 			return newPath;
 		}
 
-		private Path pickOne(List<Path> paths) {
+		Path pickOne(List<Path> paths) {
 			int index = 0;
 			double r = random.NextDouble();
 

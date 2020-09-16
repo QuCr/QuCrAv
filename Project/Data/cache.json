@@ -1419,5 +1419,185 @@
       }
     ],
     "status": "OK"
+  },
+  "https://maps.googleapis.com/maps/api/geocode/json?address=Avento, 2800 Mechelen&key=APIKEY": {
+    "results": [
+      {
+        "address_components": [
+          {
+            "long_name": "20",
+            "short_name": "20",
+            "types": [
+              "street_number"
+            ]
+          },
+          {
+            "long_name": "Schaliënhoevedreef",
+            "short_name": "Schaliënhoevedreef",
+            "types": [
+              "route"
+            ]
+          },
+          {
+            "long_name": "Mechelen",
+            "short_name": "Mechelen",
+            "types": [
+              "locality",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Antwerpen",
+            "short_name": "AN",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Vlaanderen",
+            "short_name": "Vlaanderen",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Belgium",
+            "short_name": "BE",
+            "types": [
+              "country",
+              "political"
+            ]
+          },
+          {
+            "long_name": "2800",
+            "short_name": "2800",
+            "types": [
+              "postal_code"
+            ]
+          }
+        ],
+        "formatted_address": "Building T, Schaliënhoevedreef 20, 2800 Mechelen, Belgium",
+        "geometry": {
+          "location": {
+            "lat": 51.055925599999988,
+            "lng": 4.4582980999999986
+          },
+          "location_type": "ROOFTOP",
+          "viewport": {
+            "northeast": {
+              "lat": 51.0572745802915,
+              "lng": 4.4596470802915018
+            },
+            "southwest": {
+              "lat": 51.0545766197085,
+              "lng": 4.4569491197084981
+            }
+          }
+        },
+        "place_id": "ChIJp4H1jXblw0cREJRqrL5B3f0",
+        "plus_code": {
+          "compound_code": "3F45+98 Mechelen, Belgium",
+          "global_code": "9F363F45+98"
+        },
+        "types": [
+          "establishment",
+          "point_of_interest"
+        ]
+      }
+    ],
+    "status": "OK"
+  },
+  "https://maps.googleapis.com/maps/api/geocode/json?address=Building T, Schaliënhoevedreef 20, 2800 Mechelen&key=APIKEY": {
+    "results": [
+      {
+        "address_components": [
+          {
+            "long_name": "Building T",
+            "short_name": "Building T",
+            "types": [
+              "subpremise"
+            ]
+          },
+          {
+            "long_name": "20",
+            "short_name": "20",
+            "types": [
+              "street_number"
+            ]
+          },
+          {
+            "long_name": "Schaliënhoevedreef",
+            "short_name": "Schaliënhoevedreef",
+            "types": [
+              "route"
+            ]
+          },
+          {
+            "long_name": "Mechelen",
+            "short_name": "Mechelen",
+            "types": [
+              "locality",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Antwerpen",
+            "short_name": "AN",
+            "types": [
+              "administrative_area_level_2",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Vlaanderen",
+            "short_name": "Vlaanderen",
+            "types": [
+              "administrative_area_level_1",
+              "political"
+            ]
+          },
+          {
+            "long_name": "Belgium",
+            "short_name": "BE",
+            "types": [
+              "country",
+              "political"
+            ]
+          },
+          {
+            "long_name": "2800",
+            "short_name": "2800",
+            "types": [
+              "postal_code"
+            ]
+          }
+        ],
+        "formatted_address": "Schaliënhoevedreef 20/Building T, 2800 Mechelen, Belgium",
+        "geometry": {
+          "location": {
+            "lat": 51.056352,
+            "lng": 4.4591789
+          },
+          "location_type": "ROOFTOP",
+          "viewport": {
+            "northeast": {
+              "lat": 51.057700980291493,
+              "lng": 4.4605278802915018
+            },
+            "southwest": {
+              "lat": 51.055003019708487,
+              "lng": 4.4578299197084972
+            }
+          }
+        },
+        "place_id": "EjlTY2hhbGnDq25ob2V2ZWRyZWVmIDIwL0J1aWxkaW5nIFQsIDI4MDAgTWVjaGVsZW4sIEJlbGdpdW0iJhokChYKFAoSCRWT05F25cNHEW5RoWnIZXYrEgpCdWlsZGluZyBU",
+        "types": [
+          "subpremise"
+        ]
+      }
+    ],
+    "status": "OK"
   }
 }

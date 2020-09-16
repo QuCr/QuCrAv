@@ -16,10 +16,10 @@ namespace QuCrAv {
 
 		/// <summary> Path to cache file </summary>
 		/// <remarks> ../../../ is used so that the cache file is on the same level as this file. </remarks>
-		static string cachePath = "../../../cache.json";
+		static string cachePath = "../../Data/cache.json";
 		static bool cacheUsed = false;
 		static bool cacheRewrite = false;
-		public static string APIKEY => File.ReadAllText("../../key.txt");
+		public static string APIKEY => File.ReadAllText("../../Data/key.txt");
 
 		public static Form form;
 
@@ -35,38 +35,45 @@ namespace QuCrAv {
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			opdracht1(true, false);
-			opdracht2(true, false);
+			opdracht2(true, true);
 
 			Application.Run(form = new Form1());
+			
 
 			#region logs
 			if (cacheUsed) Console.WriteLine("USED CACHE");
 			if (cacheRewrite) {
 				Console.WriteLine("REWROTE CACHE");
-				File.WriteAllText(cachePath, JsonConvert.SerializeObject(cache, Newtonsoft.Json.Formatting.Indented));
+				File.WriteAllText(cachePath, JsonConvert.SerializeObject(cache, Formatting.Indented));
 			}
 			#endregion
 
 			Console.ReadKey();
 		}
-		private static void opdracht1(bool execute = true, bool print = false) {
+		static void opdracht1(bool execute = true, bool print = false) {
 			if (execute) {
 				if (print) Console.WriteLine("[");
-				foreach (Point bar in Point.points) {
-					bar.getLatLong();
+				Point.avento.getLatLong();
+				if (print) Console.WriteLine("[{1,-15},{2,-15},{3,0}],",
+					Point.avento.address,
+					(Point.avento.latitude - 51).ToString().Replace(',', '.'),
+					(Point.avento.longitude - 4).ToString().Replace(',', '.'),
+					Point.avento.id);
+				foreach (Point point in Point.points) {
+					point.getLatLong();
 					if (print) Console.WriteLine("[{1,-15},{2,-15},{3,0}],",
-						bar.address,
-						(bar.latitude - 51).ToString().Replace(',', '.'),
-						(bar.longitude - 4).ToString().Replace(',', '.'),
-						bar.id);
+						point.address,
+						(point.latitude - 51).ToString().Replace(',', '.'),
+						(point.longitude - 4).ToString().Replace(',', '.'),
+						point.id);
 				}
 				if (print) Console.WriteLine("]");
 			}
 		}
 
-		private static void opdracht2(bool execute = true, bool print = false) {
+		static void opdracht2(bool execute = true, bool print = false) {
 			if (execute) {
-				new TSP().start();
+				new PathFinder().start();
 			}
 		}
 
