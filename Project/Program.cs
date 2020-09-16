@@ -38,7 +38,6 @@ namespace QuCrAv {
 			opdracht2(false, true);
 			opdracht3(true, true);
 
-			Application.Run(form = new Form1());
 			
 			#region logs
 			if (cacheUsed) Console.WriteLine("USED CACHE");
@@ -74,12 +73,14 @@ namespace QuCrAv {
 		static void opdracht2(bool execute = true, bool print = false) {
 			if (execute) {
 				PathFinder.start(print);
+				Application.Run(form = new Form1());
 			}
 		}
 
 		static void opdracht3(bool execute = true, bool print = false) {
 			if (execute) {
-				 PathFinder.start(print, 90);
+				PathFinder.start(print, 90);
+				Application.Run(form = new Form1());
 			}
 		}
 

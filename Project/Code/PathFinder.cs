@@ -10,15 +10,18 @@ namespace QuCrAv {
 		static List<Path> paths = new List<Path>();
 		static Path populationPath;
 
+		public static float capacity;
 		static int generationID = 0;
 		static Random random = new Random();
 
 		const int exponentialDeadRange = 15;
 		const int pathCount = 1000;
 		const int maxGeneration = 1000;
-		const int goalDistance = 95872;
+		public const int goalDistance = 81178;
 
-		static public void start(bool print, int capacity = int.MaxValue) {
+		static public void start(bool print, float capacity = int.MaxValue) {
+			PathFinder.capacity = capacity;
+
 			for (int i = 0;i < pathCount;i++) {
 				paths.Add(new Path());
 			}
@@ -26,7 +29,7 @@ namespace QuCrAv {
 			while (shortestPath.distance > goalDistance && generationID < maxGeneration) {
 				generationID++;
 
-				calculateFitness(capacity);
+				calculateFitness();
 				normalizeFitness();
 				nextGeneration();
 
@@ -35,25 +38,22 @@ namespace QuCrAv {
 			}
 
 			if (print) {
+				shortestPath.prepareCalculationDistance(); 
+				Console.WriteLine("Indices: " + String.Join(",", shortestPath.order));
 				Console.Write("Addresses:\nhttps://www.google.be/maps/dir/Avento/");
 				foreach (var item in shortestPath.order) {
-					Console.Write(item.address + "/");
+					Console.Write(item + "/");
 				}
 				Console.Write("Avento/\n");
 			}
 		}
 
-		static void calculateFitness(int capacity) {
+		static void calculateFitness() {
 			int bestPopulationPathDistance = int.MaxValue;
 			var a = Point.points;
 			foreach (Path path in paths) {
-
-
-				path.addMainPoints(capacity);
-
+				
 				double distance = path.calculateDistance();
-
-				path.order.RemoveAll((p) => p == Point.mainPoint);
 
 
 

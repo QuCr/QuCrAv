@@ -81,5 +81,9 @@ namespace QuCrAv {
 			latitude = location["lat"].ToObject<double>();
 			longitude = location["lng"].ToObject<double>();
 		}
+
+		public override string ToString() {
+			return "["+id+"]";
+		}
 	}
 }

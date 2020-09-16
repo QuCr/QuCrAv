@@ -32,35 +32,26 @@ namespace QuCrAv {
 			g.DrawString(
 				PathFinder.shortestPath.distance.ToString(".m"),
 				new Font("Arial", 20),
-				new SolidBrush(Color.PaleVioletRed),
+				new SolidBrush(PathFinder.shortestPath.distance < PathFinder.goalDistance ? Color.Green : Color.Red),
 				new PointF(20, 20)
 			);
 
 			Pen redPen = new Pen(Color.Red);
 			Pen bluePen = new Pen(Color.Blue);
+			Pen greenPen = new Pen(Color.Green);
 
 			for (int i = 0;i < showingPoints.Count - 1;i++) {
-				float X1, Y1;
-				g.DrawLine(redPen,
-					X1 = ((float)showingPoints[i].longitude + transX1) * scaleX + transX2,
-					Y1 = ((float)showingPoints[i].latitude + transY1) * scaleY + transY2,
+				Pen pen = redPen;
+				if (showingPoints[i] == Point.mainPoint) pen = bluePen;
+				if (i != 0 && showingPoints[i+1] == Point.mainPoint) pen = greenPen;
+				g.DrawLine(
+					pen,
+					((float)showingPoints[i].longitude + transX1) * scaleX + transX2,
+					((float)showingPoints[i].latitude + transY1) * scaleY + transY2,
 					((float)showingPoints[i + 1].longitude + transX1) * scaleX + transX2,
 					((float)showingPoints[i + 1].latitude + transY1) * scaleY + transY2
 				);
 			}
-
-			g.DrawLine(bluePen,
-					((float)showingPoints[0].longitude + transX1) * scaleX + transX2,
-					((float)showingPoints[0].latitude + transY1) * scaleY + transY2,
-					((float)Point.mainPoint.longitude + transX1) * scaleX + transX2,
-					((float)Point.mainPoint.latitude + transY1) * scaleY + transY2
-			);
-			g.DrawLine(bluePen,
-					((float)showingPoints.Last().longitude + transX1) * scaleX + transX2,
-					((float)showingPoints.Last().latitude + transY1) * scaleY + transY2,
-					((float)Point.mainPoint.longitude + transX1) * scaleX + transX2,
-					((float)Point.mainPoint.latitude + transY1) * scaleY + transY2
-			);
 
 
 
