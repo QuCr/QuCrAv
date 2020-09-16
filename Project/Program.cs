@@ -73,13 +73,13 @@ namespace QuCrAv {
 
 		static void opdracht2(bool execute = true, bool print = false) {
 			if (execute) {
-				new PathFinder().start(print);
+				PathFinder.start(print);
 			}
 		}
 
 		static void opdracht3(bool execute = true, bool print = false) {
 			if (execute) {
-				new PathFinder().start(print, 90);
+				 PathFinder.start(print, 90);
 			}
 		}
 
