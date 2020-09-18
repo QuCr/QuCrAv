@@ -1,5 +1,5 @@
 ﻿namespace QuCrAv {
-    partial class Form1 {
+    partial class AventoForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>

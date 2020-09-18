@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QuCrAv {
 	public class PathFinder {
-		public enum Factor : int {
+		public enum Profile : int {
             /// <summary> Uses Haversine's formula to calculate the distance </summary>
             /// <remarks> This method uses 'as the crow flies' distances </remarks>			
             /// <remarks> This method is far faster, because it calculates its distances </remarks>
@@ -20,7 +20,7 @@ namespace QuCrAv {
         public string title;
 
         /// <summary> Says how the distances will be calculated </summary>
-        public Factor factor;
+        public Profile factor;
 		public Path shortestPath;
 		public float capacity;
 		public int goalDistance;
@@ -31,11 +31,11 @@ namespace QuCrAv {
 		int generationID = 0;
 		static Random random = new Random();
 
-		int[] exponentialDeadRange = new int[3] { 15, 10, 15 };
-		int[] pathCount = new int[3] { 2000, 1000, 5000 };
-		int[] maxGeneration = new int[3] { 100, 50, 1000 };
+		int[] exponentialDeadRange = new int[4] { 15, 10, 15, 15 };
+		int[] pathCount = new int[4] { 2000, 1000, 5000, 1000 };
+		int[] maxGeneration = new int[4] { 100, 50, 1000, 10 };
 
-		public PathFinder(bool print, string title, Factor factor, int goalDistance = 0, float capacity = int.MaxValue) {
+		public PathFinder(bool print, string title, Profile factor, int goalDistance = 0, float capacity = int.MaxValue) {
 			this.goalDistance = goalDistance;
 			this.capacity = capacity;
 			this.factor = factor;
@@ -48,14 +48,14 @@ namespace QuCrAv {
 				paths.Add(new Path(this));
 			}
 
-			while (shortestPath.distance > goalDistance && generationID < maxGeneration[(int)factor]) {
+			while (shortestPath.distance > goalDistance + 1 && generationID < maxGeneration[(int)factor]) {
 				generationID++;
 
 				calculateFitness();
 				normalizeFitness();
 				paths = nextGeneration();
 
-				if (print && (generationID % 10 == 0 || factor == Factor.GOOGLEMAPS))
+				if (print && (generationID % 10 == 0 || factor == Profile.GOOGLEMAPS))
 					Console.WriteLine($"Generation {generationID} of {maxGeneration[(int)factor]}:\tDistance: {shortestPath.distance}m");
 			}
 
@@ -74,10 +74,14 @@ namespace QuCrAv {
 			List<Point> a = Point.points;
 			foreach (Path path in paths) {
 				double distance;
-				if (factor == Factor.HAVERSINE || factor == Factor.BEST)
+
+				//Hier zou je DI kunnen gebruiken, maar voor enkel de afstand te 
+				//bepalen is geen goede reden om DI te implementeren.
+				if (factor == Profile.HAVERSINE || factor == Profile.BEST)
 					distance = path.calculateHaversineDistance();
-				else if (factor == Factor.GOOGLEMAPS)
+				else if (factor == Profile.GOOGLEMAPS)
 					distance = path.getDistanceFromGoogleMaps(factor);
+
 				else throw new Exception("Enum handler case is not handled");
 				
 				if (distance < shortestPath.distance)		shortestPath = path;

@@ -3,10 +3,10 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace QuCrAv {
-	public partial class Form1 : Form {
+	public partial class AventoForm : Form {
 		PathFinder pathFinder;
 
-		public Form1(PathFinder pathFinder) {
+		public AventoForm(PathFinder pathFinder) {
 			this.pathFinder = pathFinder;
 			InitializeComponent();
 
@@ -29,14 +29,14 @@ namespace QuCrAv {
 			g.DrawString(
 				pathFinder.shortestPath.distance.ToString(".m"),
 				new Font("Arial", 40),
-				new SolidBrush(pathFinder.shortestPath.distance < pathFinder.goalDistance ? Color.Green : Color.Red),
+				new SolidBrush(pathFinder.shortestPath.distance < pathFinder.goalDistance + 1? Color.Green : Color.Red),
 				new PointF(500, 20)
 			);
 			g.DrawString(
-				pathFinder.shortestPath.distance < pathFinder.goalDistance ?
+				pathFinder.shortestPath.distance < pathFinder.goalDistance + 1?
 				"Kortste pad" : "Kan nog korter",
 				new Font("Arial", 20),
-				new SolidBrush(pathFinder.shortestPath.distance < pathFinder.goalDistance ? Color.Green : Color.Red),
+				new SolidBrush(pathFinder.shortestPath.distance < pathFinder.goalDistance + 1? Color.Green : Color.Red),
 				new PointF(550, 80)
 			);
 			g.DrawString(

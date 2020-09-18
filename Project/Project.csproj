@@ -93,5 +93,8 @@
   <ItemGroup>
     <Content Include="Data\key.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\key" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

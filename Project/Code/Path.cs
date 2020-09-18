@@ -102,7 +102,7 @@ namespace QuCrAv {
 			}
 		}
 
-		public double getDistanceFromGoogleMaps(Factor factor) {
+		public double getDistanceFromGoogleMaps(Profile factor) {
 			prepareCalculationDistance();
 
 			double pathDistance = 0;
@@ -118,7 +118,7 @@ namespace QuCrAv {
 					"&key=" + Program.APIKEY
 				);
 
-				if (factor == Factor.GOOGLEMAPS)
+				if (factor == Profile.GOOGLEMAPS)
 					pathDistance += double.Parse(token["routes"][0]["legs"][0]["distance"]["value"].ToString());
 				if (distance == 0) Console.WriteLine(pathDistance);
 			}
