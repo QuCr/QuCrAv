@@ -1,20 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using static QuCrAv.PathFinder;
 
 namespace QuCrAv {
 	public class Path {
-		public List<Point> order = new List<Point>();
+		public List<Point> order = new List<Point>();		//Order of the point in the path
 		public double distance = double.PositiveInfinity;
 		public double fitness;
+		public float capacity;								
 
 		static Random random = new Random();
 
-		public Path() {
+		//The difference between these 2 ctors is that the first one takes by default all the
+		//points that are made (except the main point, aka Avento). The latter one is used when
+		//pairing two paths into one at the end of a generation.
+		public Path(PathFinder pathFinder) {
+			capacity = pathFinder.capacity;
+
 			order.AddRange(Point.points);
 			shuffle(order);
 		}
 
-		public Path(params Point[] points) {
+		public Path(PathFinder pathFinder, params Point[] points) {
+			capacity = pathFinder.capacity;
+
 			order.AddRange(points);
 			shuffle(order);
 		}
@@ -47,15 +57,16 @@ namespace QuCrAv {
 			return distance = pathDistance;
 		}
 
+		
+		//Insert the main points into the path, so that the calculated distance is correct.
 		public void prepareCalculationDistance() {
-			if (PathFinder.capacity == int.MaxValue)
+			if (capacity == int.MaxValue)
 				return;
 
 			order.Insert(0, Point.mainPoint);
 			order.Insert(order.Count, Point.mainPoint);
 
-
-			float capacity = PathFinder.capacity;
+			
 			float cost = 0;
 
 			for (int i = 0; i < order.Count;i++) {
@@ -73,6 +84,7 @@ namespace QuCrAv {
 			}
 		}
 
+		//Removes the main points from the path, so that they won't be shuffled too/used when pairing
 		public void cleanupCalculationDistance() {
 			int index = order.IndexOf(Point.mainPoint);
 			while ((index = order.IndexOf(Point.mainPoint)) != -1) {
@@ -85,9 +97,36 @@ namespace QuCrAv {
 			for (int i = 0;i < (n - 1);i++) {
 				int r = i + random.Next(n - i);
 				T t = array[r];
-				array[r] = array[i];
+                array[r] = array[i];
 				array[i] = t;
 			}
 		}
+
+		public double getDistanceFromGoogleMaps(Factor factor) {
+			prepareCalculationDistance();
+
+			double pathDistance = 0;
+
+			for (int i = 0;i < order.Count - 1;i++) {
+				Point origin = order[i];
+				Point destination = order[i+1];
+
+				JToken token = Program.getJSONfromURL(
+					"https://maps.googleapis.com/maps/api/directions/json" +
+					"?origin=" + origin.address +
+					"&destination=" + destination.address +
+					"&key=" + Program.APIKEY
+				);
+
+				if (factor == Factor.GOOGLEMAPS)
+					pathDistance += double.Parse(token["routes"][0]["legs"][0]["distance"]["value"].ToString());
+				if (distance == 0) Console.WriteLine(pathDistance);
+			}
+
+			cleanupCalculationDistance();
+
+			return distance = pathDistance;
+		}
 	}
+
 }
