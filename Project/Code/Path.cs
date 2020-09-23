@@ -4,12 +4,12 @@ using Newtonsoft.Json.Linq;
 using static QuCrAv.PathFinder;
 
 namespace QuCrAv {
-	public class Path {
+    public class Path {
 		public List<Point> order = new List<Point>();		//Order of the point in the path
 		public double distance = double.PositiveInfinity;
 		public double fitness;
-		public float capacity;								
-
+		public float capacity;
+		
 		static Random random = new Random();
 
 		//The difference between these 2 ctors is that the first one takes by default all the
@@ -23,7 +23,7 @@ namespace QuCrAv {
 		}
 
 		public Path(PathFinder pathFinder, params Point[] points) {
-			capacity = pathFinder.capacity;
+            capacity = pathFinder.capacity;
 
 			order.AddRange(points);
 			shuffle(order);
@@ -33,8 +33,6 @@ namespace QuCrAv {
 		/// <see cref="https://en.wikipedia.org/wiki/Haversine_formula"/>
 		/// <returns> afstand tussen twee punten op een bol (Aarde) </returns>
 		public double calculateHaversineDistance() {
-			prepareCalculationDistance();
-
 			double pathDistance = 0;
 			int radius = 6371000;
 
@@ -52,14 +50,14 @@ namespace QuCrAv {
 				pathDistance += radius * 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 			}
 
-			cleanupCalculationDistance();
-
 			return distance = pathDistance;
 		}
 
 		
 		//Insert the main points into the path, so that the calculated distance is correct.
 		public void prepareCalculationDistance() {
+			//Als de capacitieit zoveel is dan wilt 
+			//dat zeggen dat er geen main points worden toegevoegd
 			if (capacity == int.MaxValue)
 				return;
 
@@ -82,10 +80,32 @@ namespace QuCrAv {
 					cost -= capacity;
 				}
 			}
-		}
+        }
 
-		//Removes the main points from the path, so that they won't be shuffled too/used when pairing
-		public void cleanupCalculationDistance() {
+        public double getDistanceFromGoogleMaps(Profile profile) {
+            double pathDistance = 0;
+
+            for (int i = 0; i < order.Count - 1; i++) {
+                Point origin = order[i];
+                Point destination = order[i + 1];
+
+                JToken token = Program.getJSONfromURL(
+                    "https://maps.googleapis.com/maps/api/directions/json" +
+                    "?origin=" + origin.address +
+                    "&destination=" + destination.address +
+                    "&key=" + Program.APIKEY
+                );
+
+                if (profile == Profile.GOOGLEMAPS)
+                    pathDistance += double.Parse(token["routes"][0]["legs"][0]["distance"]["value"].ToString());
+                if (distance == 0) Console.WriteLine(pathDistance);
+            }
+
+            return distance = pathDistance;
+        }
+
+        //Removes the main points from the path, so that they won't be shuffled too/used when pairing
+        public void cleanupCalculationDistance() {
 			int index = order.IndexOf(Point.mainPoint);
 			while ((index = order.IndexOf(Point.mainPoint)) != -1) {
 				order.RemoveAt(index);
@@ -101,32 +121,6 @@ namespace QuCrAv {
 				array[i] = t;
 			}
 		}
-
-		public double getDistanceFromGoogleMaps(Profile factor) {
-			prepareCalculationDistance();
-
-			double pathDistance = 0;
-
-			for (int i = 0;i < order.Count - 1;i++) {
-				Point origin = order[i];
-				Point destination = order[i+1];
-
-				JToken token = Program.getJSONfromURL(
-					"https://maps.googleapis.com/maps/api/directions/json" +
-					"?origin=" + origin.address +
-					"&destination=" + destination.address +
-					"&key=" + Program.APIKEY
-				);
-
-				if (factor == Profile.GOOGLEMAPS)
-					pathDistance += double.Parse(token["routes"][0]["legs"][0]["distance"]["value"].ToString());
-				if (distance == 0) Console.WriteLine(pathDistance);
-			}
-
-			cleanupCalculationDistance();
-
-			return distance = pathDistance;
-		}
-	}
+    }
 
 }

@@ -1,14 +1,18 @@
-﻿/*  -------------------------------------------------------------------------------------------------------------
- *  Hallo Avento
- *  
- *  Dit project bevat de 3 opdrachten die jullie gegeven hebben en een extra opdracht die de Google Maps
- *  lengtes gebruikt. 
- *  
- *  Op lijnen 45 - 48 worden de vier opdrachten uitgevoerd. -> opdracht1(opdracht1(execute: true, print: true);
- *  Om de queries op te vragen bij Google, moet u zelf nog een Google API Key voorzien, . Zet deze key in Data/key
- *  Als jij het scherm ziet en de lengte is rood/te kort, dan kan je dit nog eens runnen en zien of het groen/'kortste pad' wordt.
- *  -------------------------------------------------------------------------------------------------------------*/
-
+﻿/*
+    AventoForm
+        PathFinder
+            Path
+                methodes:
+                    Haversine
+                    GoogleMaps
+                calculateFitness
+                prepareCalculationDistance
+                cleanupCalculationDistance
+                normalizeFitness
+                    nextGeneration
+                    2x chooseOne
+            showShortestPath
+*/
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,7 +26,7 @@ using static QuCrAv.PathFinder;
 namespace QuCrAv {
     class Program {
         /// <summary> Enum for choosing which method is used for calculating the distance </summary>
-        const Profile profile = Profile.HAVERSINE;
+        public static Profile profile = Profile.HAVERSINE;
 
         /// <summary> Used for storing literally cost-expensive HTTP requests  </summary>
         static Dictionary<string, JToken> cache = new Dictionary<string, JToken>();
@@ -35,18 +39,17 @@ namespace QuCrAv {
         static bool cacheRewritten = false;
         public static string APIKEY => File.ReadAllText("../../Data/key");
 
-
-
         [STAThread]
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            Console.WriteLine("Using profile: " + profile.ToString());
             opdracht1(execute: true, print: true);  //Lat en Lon opvragen
             opdracht2(execute: true, print: true);  //Kortste route
             opdracht3(execute: true, print: true);  //Capaciteit van 90 drankjes
             extraOpdr(execute: true, print: true);  //Echte lengtes worden gebruikt, geen lengtes in vogelvlucht
-
+            
             #region logs
             if (cacheUsed) Console.WriteLine("USED CACHE");
             if (cacheRewritten) {
@@ -55,12 +58,9 @@ namespace QuCrAv {
             }
             #endregion
 
+            Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
         }
-
-
-
-
 
         static Program() {
             if (File.Exists(cachePath)) {
@@ -71,8 +71,7 @@ namespace QuCrAv {
 
         static void opdracht1(bool execute = true, bool print = false) {
             if (execute) {
-                if (print)
-                    Console.WriteLine("[");
+                if (print) Console.WriteLine("\n\nOpdracht 1\n**********\n[");
                 Point.mainPoint.getLatLong();
                 if (print) Console.WriteLine("\t[ {1,-11}, {2,-11}, {3,2} ],",
                     Point.mainPoint.address,
@@ -93,14 +92,16 @@ namespace QuCrAv {
 
         static void opdracht2(bool execute = true, bool print = false) {
             if (execute) {
+                if (print) Console.WriteLine("\n\nOpdracht 2\n**********");
                 Application.Run(new AventoForm(
-                    new PathFinder(print, "Opdracht 2", profile, 68173))
+                    new PathFinder(print, "Opdracht 2", profile, 68142))
                 );
             }
         }
 
         static void opdracht3(bool execute = true, bool print = false) {
             if (execute) {
+                if (print) Console.WriteLine("\n\nOpdracht 3\n**********");
                 Application.Run(new AventoForm(
                     new PathFinder(print, "Opdracht 3", profile, 95873, 90)
                 ));
@@ -109,9 +110,12 @@ namespace QuCrAv {
 
         static void extraOpdr(bool execute = true, bool print = false) {
             if (execute) {
-                Console.WriteLine("Extra opdracht 4: gebruiken van Google Maps lengtes, duurt langer");
-                MessageBox.Show("Deze opdracht duurt langer, omdat deze overal de lengtes van hemzelf " +
-                    "moet lezen op dezelfde plaats!");
+                if (print) Console.WriteLine("\n\nOpdracht 4\n**********");
+                if (print) {
+                    Console.WriteLine("gebruiken van Google Maps lengtes, duurt langer");
+                    MessageBox.Show("Deze opdracht duurt langer, omdat deze overal de lengtes van hemzelf " +
+                        "moet lezen op dezelfde plaats!");
+                }
 
                 Application.Run(new AventoForm(
                     new PathFinder(print, "GM Distance", Profile.GOOGLEMAPS, 68173)
